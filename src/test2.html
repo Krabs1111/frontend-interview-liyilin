@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+
+<script>
+    // 因为const [a, b] = {a:1,b:2};这一行有语法错误，在运行中会报错，之前尝试赋值，但是const不支持
+    // 所以打算直接去除这一行
+    // 又得在函数内写代码，即使用了a=1,b=2添加在全局上，但容易导致代码维护困难和意外覆盖全局变量的风险，因此并不推荐
+    function run() {
+        a=1
+        b=2
+    }
+    run();
+    // const [a, b] = {a:1,b:2};
+    console.log(a, b); // 输出 1 2
+</script>
+
+</html>

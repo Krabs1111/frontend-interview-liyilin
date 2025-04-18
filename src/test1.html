@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>拖拽盒子</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+
+		.fatherBox {
+			/* position: fixed; */
+			margin-top: 200px;
+			margin-left: 200px;
+			z-index: 1000;
+			height: 500px;
+			width: 500px;
+			border: 1px solid black;
+		}
+
+		.box {
+			height: 100px;
+			width: 100px;
+			background: blue;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="fatherBox">
+		<div class="box">
+		</div>
+	</div>
+	<script>
+		(function moveIn() {
+			let dragDomMove = document.querySelector('.box')
+			let fatherBox = document.querySelector('.fatherBox')
+			let drag = true
+			let location = [0, 0]
+			if (!drag) return
+			// 事件按下
+			dragDomMove.onmousedown = function (event) {
+				dragDomMove.style.position = "absolute"
+				let X, Y
+				let maxPosition = [fatherBox.offsetWidth + fatherBox.offsetLeft, fatherBox.offsetHeight + fatherBox.offsetTop] //最大滚动位置
+				let minPosition = [fatherBox.offsetLeft, fatherBox.offsetTop]
+				let boxSize = [dragDomMove.offsetWidth, dragDomMove.offsetHeight] //盒子宽高
+				let curPosition = [event.clientX, event.clientY] // 获取当前的x、y轴距离
+				let prePosition = getDragMoveAxis(dragDomMove.style.transform) // 获取鼠标在方块内的轴距
+				let innerX = curPosition[0] - prePosition[0]-minPosition[0] // 获取鼠标在方块内的x轴距
+				let innerY = curPosition[1] - prePosition[1]-minPosition[1] // 获取鼠标在方块内的y轴距
+				// 事件拖动
+				console.log('1111',innerX, innerY);
+				
+				document.onmousemove = function (e) {
+					dragDomMove.style.opacity = 0.5
+					// 边界限制
+					X = e.clientX - event.offsetX < minPosition[0] ? minPosition[0] : maxPosition[0] - e.clientX > 0 ? e.clientX - innerX :
+						maxPosition[0] - boxSize[0]
+					Y = e.clientY - event.offsetY < minPosition[1] ? minPosition[1] : maxPosition[1] - e.clientY > 0 ? e.clientY - innerY :
+					maxPosition[1] - boxSize[1]
+					if (maxPosition[0] - X > boxSize[0]) {
+						location[0] = X-minPosition[0]
+					} else {
+						location[0] = maxPosition[0] - boxSize[0] - minPosition[0]
+					}
+					if (maxPosition[1] - Y > boxSize[1]) {
+						location[1] = Y-minPosition[1]
+					} else {
+						location[1] = maxPosition[1] - boxSize[1] - minPosition[1]
+					}
+					dragDomMove.style.transform = `translate(${location[0]}px, ${location[1]}px)`
+				}
+				// 事件清除
+				document.onmouseup = function () {
+					document.onmousemove = null
+					document.onmouseup = null
+					dragDomMove.style.opacity = 1
+				}
+			}
+		})()
+		function getDragMoveAxis(data) {
+			var clientArr = data.match(/\d+(\.\d+)?/g) || [0, 0];
+			//字符串数组转数字数组
+			return clientArr.map(Number)
+		}
+	</script>
+</body>
+
+</html>
